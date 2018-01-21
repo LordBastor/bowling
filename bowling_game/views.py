@@ -1,8 +1,8 @@
-from django.shortcuts import render
-
 from .serializers import BowlingGameSerializer
 
 from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
 
 
 class BowlingGameView(APIView):
@@ -11,8 +11,24 @@ class BowlingGameView(APIView):
 			Creates a new bowling game for the current user
 			Does not require a score input but can accept full or partial
 			score comma separated integer list
+			
+			Response code: 201
+			
+			Response body: BowlingGameSerializer
+			---
+			
+			serializer: BowlingGameSerializer
 		"""
-		pass
+		data = request.data
+		user = request.user
+		
+		data['user'] = request.user.id
+		
+		serializer = BowlingGameSerializer(data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+		return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BowlingGameDetailView(APIView):
