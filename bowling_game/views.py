@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 
+from django.http import Http404
+
 
 class BowlingGameView(APIView):
 	def post(self, request):
@@ -35,7 +37,22 @@ class BowlingGameDetailView(APIView):
 	def get(self, request, id):
 		"""
 			Return a bowling game by its id
+			
+			Response code: 200
+			
+			Response body: BowlingGameSerializer
+			---
+			
+			serializer: BowlingGameSerializer
 		"""
+		try:
+			game = BowlingGame.object.get(pk=id)
+		except BowlingGame.DoesNotExist:
+			raise Http404()
+		
+		serializer = BowlingGameSerializer(game)
+		return Response(data=serializer.data, status=status.HTTP_200_OK)
+	
 	def put(self, request, id):
 		"""
 			Updates a bowling game by its id
