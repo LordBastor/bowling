@@ -37,7 +37,7 @@ class BowlingGameView(APIView):
 class BowlingGameDetailView(APIView):
 	def get_game(self, id):
 		try:
-			return BowlingGame.object.get(pk=id)
+			return BowlingGame.objects.get(pk=id)
 		except BowlingGame.DoesNotExist:
 			raise Http404()
 	
