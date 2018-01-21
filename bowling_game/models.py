@@ -19,5 +19,6 @@ class BowlingGame(BaseModel):
 		max_length=511,
 		blank=True,
 		null=True,
+		default='',
 		validators=[validate_comma_separated_integer_list]
 	)
