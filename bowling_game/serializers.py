@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 from .models import BowlingGame
 
+from bowling_main.score_helper import calculate_score
+
+
 class BowlingGameSerializer(serializers.ModelSerializer):
 	score = serializers.SerializerMethodField()
 	
@@ -15,5 +18,7 @@ class BowlingGameSerializer(serializers.ModelSerializer):
 		)
 	
 	def get_score(self, obj):
-		# how to do score
+		if obj.rolls:
+			roll_list = [int(r) for r in obj.rolls.rstrip(',').split(',')]
+			return calculate_score(roll_list)
 		return 0
