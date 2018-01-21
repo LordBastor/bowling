@@ -27,7 +27,7 @@ class BowlingGameView(APIView):
 		
 		data['user'] = request.user.id
 		
-		serializer = BowlingGameSerializer(data)
+		serializer = BowlingGameSerializer(data=data)
 		if serializer.is_valid():
 			serializer.save()
 			return Response(data=serializer.data, status=status.HTTP_201_CREATED)
