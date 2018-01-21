@@ -2,7 +2,7 @@ from .serializers import BowlingGameSerializer
 from .models import BowlingGame
 
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.response import Response
 
 from django.http import Http404
@@ -87,8 +87,25 @@ class BowlingGameDetailView(APIView):
 		return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class BowlingGameListView(APIView):
+class BowlingGameListView(generics.GenericAPIView):
+	def get_queryset(self):
+		pass
+	
+	def get_serializer_class(self):
+		pass
+	
 	def get(self, request):
 		"""
-			Returns a list of paignated bowling games for the current user
+			Returns a list of all games for the current user
+			
+			Response code: 200
+			
+			Response body: BowlingGameSerializer
+			---
+			
+			serializer: BowlingGameSerializer
 		"""
+		games		 = BowlingGame.objects.filter(user=request.user)
+		page		 = self.paginate_queryset(games)
+		serializer	 = BowlingGameSerializer(page, many=True)
+		return self.get_paginated_response(serializer.data)
